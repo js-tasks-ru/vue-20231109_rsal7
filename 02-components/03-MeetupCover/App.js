@@ -25,12 +25,16 @@ export default defineComponent({
   template: `
     <div class="sample">
       <h1 class="my">С изображением</h1>
-      <MeetupCover :title="meetupWithImage.title" :image="meetupWithImage.image" />
+      <MeetupCover :title="meetupWithImage.title" :image="meetupWithImage.image" >
+
+      </MeetupCover>
 
       <hr class="my" />
 
       <h1 class="my">Без изображения</h1>
-      <MeetupCover :title="meetupWithoutImage.title" :image="meetupWithoutImage.image" />
+      <MeetupCover :title="meetupWithoutImage.title" :image="meetupWithoutImage.image" >
+
+      </MeetupCover>
     </div>
   `,
 });
