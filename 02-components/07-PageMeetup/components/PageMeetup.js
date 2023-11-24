@@ -27,7 +27,7 @@ export default defineComponent({
       errors: [],
     };
   },
-  
+
   watch: {
     meetupId: {
       handler(newValue, oldValue) {
@@ -42,7 +42,7 @@ export default defineComponent({
             console.warn(e);
             this.currentMeetup = null;
             this.isLoading = false;
-            this.errors.push('Error: Meetup not found!');
+            this.errors.push('Test Error');
           });
       },
       immediate: true,
