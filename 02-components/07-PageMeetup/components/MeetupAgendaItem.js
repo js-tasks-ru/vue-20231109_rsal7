@@ -9,15 +9,14 @@ export default defineComponent({
       required: true,
     },
   },
-  agendaItemIcons,
-  agendaItemDefaultTitles,
+
 
   computed: {
     itemIcon() {
-      return `icon-${this.$options.agendaItemIcons[this.agendaItem.type]}.svg`;
+      return `icon-${agendaItemIcons[this.agendaItem.type]}.svg`;
     },
     itemTitle() {
-      return this.agendaItem.title || this.$options.agendaItemDefaultTitles[this.agendaItem.type];
+      return this.agendaItem.title || agendaItemDefaultTitles[this.agendaItem.type];
     },
   },
 

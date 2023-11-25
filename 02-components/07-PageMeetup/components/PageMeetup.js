@@ -24,14 +24,14 @@ export default defineComponent({
     return {
       currentMeetup: null,
       isLoading: false,
-      errors: [],
+      error: '',
     };
   },
 
   watch: {
     meetupId: {
       handler(newValue, oldValue) {
-        this.errors = [];
+        this.error = '';
         this.isLoading = true;
         fetchMeetupById(newValue)
           .then((data) => {
@@ -42,23 +42,26 @@ export default defineComponent({
             console.warn(e);
             this.currentMeetup = null;
             this.isLoading = false;
-            this.errors.push('Test Error');
+            this.error = e.message;
           });
       },
       immediate: true,
     },
+    computed: {
+
+    }
   },
 
   template: `
     <div class='page-meetup'>
-    <MeetupView v-if='currentMeetup && !isLoading' :meetup='currentMeetup' />
+    <MeetupView v-if='currentMeetup && !isLoading && !error' :meetup='currentMeetup' />
 
     <UiContainer v-if='isLoading'>
       <UiAlert>Загрузка...</UiAlert>
     </UiContainer>
 
-    <UiContainer v-if='errors.length > 0'>
-      <UiAlert v-for='item in errors'>{{ item }}</UiAlert>
+    <UiContainer v-if='error'>
+      <UiAlert >{{ error }}</UiAlert>
     </UiContainer>
     </div>`,
 });
