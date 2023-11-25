@@ -15,7 +15,7 @@ export default defineComponent({
     <div class="sample">
       <div class="container">
         <p>
-          <select v-model="meetupId">
+          <select v-model.number="meetupId">
             <option v-for="i in 10" :key="i" :value="i">{{ i }}</option>
           </select>
         </p>

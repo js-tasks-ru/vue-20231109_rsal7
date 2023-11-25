@@ -5,12 +5,13 @@ export default defineComponent({
   props: {
     count: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   emits: ['update:count'],
 
   // Компонент должен иметь входной параметр и порождать событие
 
-  template: `<button type="button" @click="$emit('update:count', count + 1)">{{count}}</button>`,
+  template: `
+    <button type='button' @click="$emit('update:count', count + 1)">{{ count }}</button>`,
 });
