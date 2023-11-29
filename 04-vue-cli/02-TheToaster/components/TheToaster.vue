@@ -1,73 +1,69 @@
 <template>
-  <div class="toasts">
-    <div class="toast toast_success">
-      <UiIcon class="toast__icon" icon="check-circle" />
-      <span>Success Toast Example</span>
-    </div>
+  <UiToastList>
 
-    <div class="toast toast_error">
-      <UiIcon class="toast__icon" icon="alert-circle" />
-      <span>Error Toast Example</span>
-    </div>
-  </div>
+    <UiToast
+      v-for='[key, value] in toasts'
+      :toast='value'
+      :key='key'
+      @needDestroy='destroyToast'
+    />
+
+  </UiToastList>
 </template>
 
 <script>
 import UiIcon from './UiIcon.vue';
+import UiToast from './UiToast';
+import UiToastList from './UiToastList';
+
+const toastTypes = {
+  success: {
+    icon: 'check-circle',
+    className: 'toast_success',
+  },
+  error: {
+    icon: 'alert-circle',
+    className: 'toast_error',
+  },
+};
 
 export default {
   name: 'TheToaster',
+  toastTypes,
+  data() {
+    return {
+      toasts: new Map(),
+    };
+  },
 
-  components: { UiIcon },
+  components: { UiIcon, UiToast, UiToastList },
+
+  methods: {
+    success(message) {
+      const newId = this.getNewId();
+      this.toasts.set(newId, {
+        id: newId,
+        type: toastTypes.success,
+        message,
+      });
+    },
+    error(message) {
+      const newId = this.getNewId();
+      this.toasts.set(newId, {
+        id: newId,
+        type: toastTypes.error,
+        message: message,
+      });
+    },
+    destroyToast(toast) {
+      this.toasts.delete(toast)
+    },
+    getNewId() {
+      return Math.floor(Math.random() * Date.now());
+    },
+  },
 };
 </script>
 
 <style scoped>
-.toasts {
-  position: fixed;
-  bottom: 8px;
-  right: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  white-space: pre-wrap;
-  z-index: 999;
-}
-
-@media all and (min-width: 992px) {
-  .toasts {
-    bottom: 72px;
-    right: 112px;
-  }
-}
-
-.toast {
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: row;
-  align-items: center;
-  padding: 16px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-  font-size: 18px;
-  line-height: 28px;
-  width: auto;
-}
-
-.toast + .toast {
-  margin-top: 20px;
-}
-
-.toast__icon {
-  margin-right: 12px;
-}
-
-.toast.toast_success {
-  color: var(--green);
-}
-
-.toast.toast_error {
-  color: var(--red);
-}
 </style>
