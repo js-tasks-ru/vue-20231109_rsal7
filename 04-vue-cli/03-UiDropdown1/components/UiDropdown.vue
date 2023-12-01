@@ -10,7 +10,7 @@
     </button>
 
     <div class='dropdown__menu' role='listbox' :style='{ display: isOpen ? "flex" : "none"}'>
-      <template v-if='isOpen'>
+<!--      <template v-if='isOpen'>-->
         <button
           v-for='item in options'
           :class='["dropdown__item", hasIcon ? "dropdown__item_icon" : ""]'
@@ -22,7 +22,7 @@
           <UiIcon v-if='item.icon' :icon='item.icon' class='dropdown__icon' />
           {{ item.text }}
         </button>
-      </template>
+<!--      </template>-->
     </div>
   </div>
   <select v-model='currentOptionsValue' style='display: none'>
