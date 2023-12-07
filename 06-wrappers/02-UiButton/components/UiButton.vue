@@ -1,8 +1,8 @@
 <template>
   <component
     :is='tag'
-    :class="['button', `button_${variant}`, {'button_block': block}]"
     v-bind="addAttrs"
+    :class="['button', `button_${variant}`, {'button_block': block}]"
   >
     <slot/>
   </component>

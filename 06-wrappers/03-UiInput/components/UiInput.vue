@@ -1,13 +1,30 @@
 <template>
-  <div class="input-group input-group_icon input-group_icon-left input-group_icon-right">
-    <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+  <div
+    class='input-group'
+    :class='{
+    "input-group_icon": hasIcon(),
+    "input-group_icon-right": hasIconRight(),
+    "input-group_icon-left": hasIconLeft()
+  }'
+  >
+    <div class='input-group__icon' v-if='hasIconLeft()'>
+      <slot name='left-icon' />
     </div>
 
-    <input ref="input" class="form-control form-control_rounded form-control_sm" />
-
-    <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+    <component
+      :is='tag'
+      ref='input'
+      :value='modelValue'
+      @[eventName]="$emit('update:modelValue', $event.target.value)"
+      class='form-control'
+      v-bind='$attrs'
+      :class="[
+         {'form-control_rounded': rounded},
+         {'form-control_sm': small},
+      ]"
+    />
+    <div class='input-group__icon' v-if='hasIconRight()'>
+      <slot name='right-icon' />
     </div>
   </div>
 </template>
@@ -15,6 +32,54 @@
 <script>
 export default {
   name: 'UiInput',
+  props: {
+    small: {
+      type: Boolean,
+      default: false,
+    },
+    rounded: {
+      type: Boolean,
+      default: false,
+    },
+    multiline: {
+      type: Boolean,
+      default: false,
+    },
+    modelValue: {
+      type: String,
+    },
+    modelModifiers: {
+      default: () => ({}),
+    },
+  },
+  inheritAttrs: false,
+  emits: ['update:modelValue'],
+  computed: {
+    tag() {
+      return this.multiline ? 'textarea' : 'input';
+    },
+    eventName() {
+      return this.modelModifiers.lazy ? 'change' : 'input';
+    },
+  },
+  methods: {
+    focus() {
+      this.$refs.input.focus();
+    },
+    hasIcon() {
+      return this.$slots['left-icon'] || this.$slots['right-icon'];
+    },
+    hasIconLeft() {
+      return this.$slots['left-icon'];
+    },
+    hasIconRight() {
+      return this.$slots['right-icon'];
+    },
+
+  },
+  mounted() {
+    console.log(this.modelModifiers);
+  },
 };
 </script>
 
