@@ -139,9 +139,6 @@ export default {
     },
   },
   methods: {
-    setMeetupField(field, value) {
-      this.$emit('setMeetupField', { field, value });
-    },
     selectFile(file) {
       this.localMeetup.imageToUpload = file;
     },
