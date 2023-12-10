@@ -72,12 +72,13 @@ export default {
   methods: {
     emptyHandler(event) {
       const file = event.target.files[0];
-      this.emitState(file);
+      // this.emitState(file);
       this.filePreview = URL.createObjectURL(file);
       if (this.uploader) {
         this.setState('loading');
         this.uploadFile(file);
       } else {
+        this.emitState(file);
         this.setState('filled');
       }
     },
