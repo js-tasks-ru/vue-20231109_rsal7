@@ -1,37 +1,69 @@
 <template>
   <fieldset class="agenda-item-form">
-    <button type="button" class="agenda-item-form__remove-button">
+    <button type="button" class="agenda-item-form__remove-button" @click='$emit("remove")'>
       <UiIcon icon="trash" />
     </button>
 
     <UiFormGroup>
-      <UiDropdown title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
+      <UiDropdown
+        title="Тип"
+        :options="$options.agendaItemTypeOptions"
+        name="type"
+        v-model='localAgendaItem.type'
+      />
     </UiFormGroup>
 
     <div class="agenda-item-form__row">
       <div class="agenda-item-form__col">
         <UiFormGroup label="Начало">
-          <UiInput type="time" placeholder="00:00" name="startsAt" />
+          <UiInput
+            type="time"
+            placeholder="00:00"
+            name="startsAt"
+            v-model='localAgendaItem.startsAt'
+
+          />
         </UiFormGroup>
       </div>
       <div class="agenda-item-form__col">
         <UiFormGroup label="Окончание">
-          <UiInput type="time" placeholder="00:00" name="endsAt" />
+          <UiInput
+            type="time"
+            placeholder="00:00"
+            name="endsAt"
+            v-model='localAgendaItem.endsAt'
+
+          />
         </UiFormGroup>
       </div>
     </div>
 
-    <UiFormGroup label="Тема">
-      <UiInput name="title" />
+    <UiFormGroup :label="currentType.title" v-if='currentType.hasOwnProperty("title")'>
+      <UiInput
+        name="title"
+        v-model="localAgendaItem.title"
+      />
     </UiFormGroup>
-    <UiFormGroup label="Докладчик">
-      <UiInput name="speaker" />
+    <UiFormGroup :label="currentType.speaker" v-if='currentType.hasOwnProperty("speaker")'>
+      <UiInput
+        name="speaker"
+        v-model="localAgendaItem.speaker"
+      />
     </UiFormGroup>
-    <UiFormGroup label="Описание">
-      <UiInput multiline name="description" />
+    <UiFormGroup :label="currentType.description" v-if='currentType.hasOwnProperty("description")'>
+      <UiInput
+        multiline
+        name="description"
+        v-model="localAgendaItem.description"
+      />
     </UiFormGroup>
-    <UiFormGroup label="Язык">
-      <UiDropdown title="Язык" :options="$options.talkLanguageOptions" name="language" />
+    <UiFormGroup :label="currentType.language" v-if='currentType.hasOwnProperty("language")'>
+      <UiDropdown
+        title="Язык"
+        :options="$options.talkLanguageOptions"
+        name="language"
+        v-model='localAgendaItem.language'
+      />
     </UiFormGroup>
   </fieldset>
 </template>
@@ -75,6 +107,19 @@ const talkLanguageOptions = [
   { value: 'RU', text: 'RU' },
   { value: 'EN', text: 'EN' },
 ];
+const dateDiff = function(start, end) {
+  return getDateFromStr(end) - getDateFromStr(start);
+}
+const getDateFromStr = function(str){
+  return new Date().setHours(str.split(':')[0], str.split(':')[1])
+}
+const getStringDateFromInt = function(number){
+  const addZero = function(number){
+    return +number < 10 ? `0${number}` : `${number}`
+  }
+  const date = new Date(number);
+  return `${addZero(date.getHours())}:${addZero(date.getMinutes())}`
+}
 
 export default {
   name: 'MeetupAgendaItemForm',
@@ -90,6 +135,52 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      localAgendaItem: { ...this.agendaItem },
+      period: dateDiff(this.agendaItem.startsAt, this.agendaItem.endsAt),
+      itemTitles: {
+        talk: {
+          title: 'Тема',
+          speaker: 'Докладчик',
+          description: 'Описание',
+          language: 'Язык'
+        },
+        other: {
+          title: 'Заголовок',
+          description: 'Описание'
+        },
+        notYet: {
+          title: "Нестандартный текст (необязательно)"
+        }
+
+      }
+    };
+  },
+  computed: {
+    currentType(){
+      if(this.itemTitles.hasOwnProperty(this.localAgendaItem.type)){
+        return this.itemTitles[this.localAgendaItem.type]
+      }
+      return this.itemTitles['notYet'];
+    },
+  },
+  emits: ['update:agendaItem','remove'],
+
+  watch: {
+    localAgendaItem: {
+      deep: true,
+      handler(){
+        if(this.agendaItem.endsAt !== this.localAgendaItem.endsAt){
+          this.period = dateDiff(this.localAgendaItem.startsAt, this.localAgendaItem.endsAt);
+        }
+        if(this.agendaItem.startsAt !== this.localAgendaItem.startsAt){
+          this.localAgendaItem.endsAt = getStringDateFromInt(getDateFromStr(this.localAgendaItem.startsAt) + this.period);
+        }
+        this.$emit('update:agendaItem', { ...this.localAgendaItem });
+      }
+    },
+  }
 };
 </script>
 
