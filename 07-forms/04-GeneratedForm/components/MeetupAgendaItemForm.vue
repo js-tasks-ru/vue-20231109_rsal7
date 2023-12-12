@@ -1,32 +1,39 @@
 <template>
   <fieldset class="agenda-item-form">
-    <button type="button" class="agenda-item-form__remove-button">
+    <button type="button" class="agenda-item-form__remove-button" @click='$emit("remove")'>
       <UiIcon icon="trash" />
     </button>
 
     <UiFormGroup>
-      <UiDropdown title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
+      <UiDropdown
+        title="Тип"
+        :options="$options.agendaItemTypeOptions"
+        name="type"
+        v-model='currentType'
+      />
     </UiFormGroup>
 
     <div class="agenda-item-form__row">
       <div class="agenda-item-form__col">
         <UiFormGroup label="Начало">
-          <UiInput type="time" placeholder="00:00" name="startsAt" />
+          <UiInput type="time" placeholder="00:00" name="startsAt" v-model='localAgendaItem.startsAt'/>
         </UiFormGroup>
       </div>
       <div class="agenda-item-form__col">
         <UiFormGroup label="Окончание">
-          <UiInput type="time" placeholder="00:00" name="endsAt" />
+          <UiInput type="time" placeholder="00:00" name="endsAt" v-model='localAgendaItem.endsAt'/>
         </UiFormGroup>
       </div>
     </div>
 
-    <UiFormGroup label="Заголовок">
-      <UiInput name="title" />
+    <UiFormGroup v-for='(value, objName, index) in $options.agendaItemFormSchemas[currentType]' :label='value["label"]'>
+      <component
+        :is='value.component'
+        v-bind='value.props'
+        v-model='localAgendaItem[objName]'
+      />
     </UiFormGroup>
-    <UiFormGroup label="Описание">
-      <UiInput multiline name="description" />
-    </UiFormGroup>
+
   </fieldset>
 </template>
 
@@ -151,6 +158,20 @@ const agendaItemFormSchemas = {
   },
 };
 
+const dateDiff = function(start, end) {
+  return getDateFromStr(end) - getDateFromStr(start);
+}
+const getDateFromStr = function(str){
+  return new Date().setHours(str.split(':')[0], str.split(':')[1])
+}
+const getStringDateFromInt = function(number){
+  const addZero = function(number){
+    return +number < 10 ? `0${number}` : `${number}`
+  }
+  const date = new Date(number);
+  return `${addZero(date.getHours())}:${addZero(date.getMinutes())}`
+}
+
 export default {
   name: 'MeetupAgendaItemForm',
 
@@ -165,6 +186,38 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      localAgendaItem: { ...this.agendaItem },
+      period: dateDiff(this.agendaItem.startsAt, this.agendaItem.endsAt),
+    }
+  },
+  emits: ['update:agendaItem','remove'],
+  computed: {
+    currentType:{
+      get(){
+        return this.localAgendaItem.type
+      },
+      set(value){
+        this.localAgendaItem.type = value;
+      }
+    }
+  },
+  watch: {
+    localAgendaItem: {
+      deep: true,
+      handler(){
+        if(this.agendaItem.endsAt !== this.localAgendaItem.endsAt){
+          this.period = dateDiff(this.localAgendaItem.startsAt, this.localAgendaItem.endsAt);
+        }
+        if(this.agendaItem.startsAt !== this.localAgendaItem.startsAt){
+          this.localAgendaItem.endsAt = getStringDateFromInt(getDateFromStr(this.localAgendaItem.startsAt) + this.period);
+        }
+        this.$emit('update:agendaItem', { ...this.localAgendaItem });
+      }
+    },
+  }
+
 };
 </script>
 
