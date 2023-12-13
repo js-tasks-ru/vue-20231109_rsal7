@@ -1,6 +1,6 @@
 <template>
-  <div class='toast' :class='toast.type.className'>
-    <UiIcon class='toast__icon' :icon='toast.type.icon' />
+  <div class='toast' :class='toastClassName'>
+    <UiIcon class='toast__icon' :icon='toastIcon' />
     <span>{{ toast.message }}</span>
   </div>
 </template>
@@ -8,26 +8,49 @@
 <script>
 import UiIcon from './UiIcon.vue';
 
+const toastTypes = {
+  success: {
+    icon: 'check-circle',
+    className: 'toast_success',
+  },
+  error: {
+    icon: 'alert-circle',
+    className: 'toast_error',
+  },
+};
+
 export default {
   name: 'UiToast',
   props: {
     toast: {
       type: Object,
       required: true,
+      validator(value) {
+        const validId = typeof value.id === 'number' || typeof value.id === 'string';
+        const validToastType = toastTypes.hasOwnProperty(value.toastType);
+        const validMessage = typeof value.message === 'string';
+        return validId && validMessage && validToastType;
+      },
     },
     lifeTime: {
       type: Number,
       default: 5000,
     },
   },
+  toastTypes,
   emits: [
     'needDestroy',
   ],
+  data() {
+    return {
+      toastClassName: toastTypes[this.toast.toastType].className,
+      toastIcon: toastTypes[this.toast.toastType].icon
+    }
+  },
   components: { UiIcon },
   methods: {
     killMe() {
-      console.log(this.toast.id);
-      this.$emit('needDestroy', this.toast.id);
+      this.$emit('needDestroy');
     },
 
   },
@@ -40,14 +63,6 @@ export default {
 <style scoped>
 .toast__icon {
   margin-right: 12px;
-}
-
-.toast.toast_success {
-  color: var(--green);
-}
-
-.toast.toast_error {
-  color: var(--red);
 }
 
 .toast {
@@ -63,7 +78,12 @@ export default {
   line-height: 28px;
   width: auto;
 }
-.toast + .toast {
-  margin-top: 20px;
+
+.toast.toast_success {
+  color: var(--green);
+}
+
+.toast.toast_error {
+  color: var(--red);
 }
 </style>
