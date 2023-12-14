@@ -9,7 +9,7 @@
         title="Тип"
         :options="$options.agendaItemTypeOptions"
         name="type"
-        v-model='currentType'
+        v-model='this.localAgendaItem.type'
       />
     </UiFormGroup>
 
@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <UiFormGroup v-for='(value, objName, index) in $options.agendaItemFormSchemas[currentType]' :label='value["label"]'>
+    <UiFormGroup v-for='(value, objName, index) in $options.agendaItemFormSchemas[this.localAgendaItem.type]' :label='value["label"]'>
       <component
         :is='value.component'
         v-bind='value.props'
@@ -193,16 +193,7 @@ export default {
     }
   },
   emits: ['update:agendaItem','remove'],
-  computed: {
-    currentType:{
-      get(){
-        return this.localAgendaItem.type
-      },
-      set(value){
-        this.localAgendaItem.type = value;
-      }
-    }
-  },
+
   watch: {
     localAgendaItem: {
       deep: true,

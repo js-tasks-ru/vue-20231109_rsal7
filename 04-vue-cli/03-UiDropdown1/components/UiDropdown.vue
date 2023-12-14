@@ -2,18 +2,21 @@
   <div :class='["dropdown", isOpen ? "dropdown_opened": ""]' @click='isOpen = !isOpen'>
     <button
       type='button'
-      :class='["dropdown__toggle", hasIcon ? "dropdown__toggle_icon" : ""]'
-
+      :class='{
+      dropdown__toggle_icon: hasIcon
+    }'
+      class='dropdown__toggle'
     >
       <UiIcon v-if='!!optionsIcon' :icon='optionsIcon' class='dropdown__icon' />
       <span>{{ optionsTitle }}</span>
     </button>
 
-    <div class='dropdown__menu' role='listbox' :style='{ display: isOpen ? "flex" : "none"}'>
+    <div class='dropdown__menu' role='listbox'  v-show='isOpen'>
 <!--      <template v-if='isOpen'>-->
         <button
           v-for='item in options'
-          :class='["dropdown__item", hasIcon ? "dropdown__item_icon" : ""]'
+          class='dropdown__item'
+          :class='{dropdown__item_icon: hasIcon}'
           role='option'
           type='button'
           :value='item.value'
@@ -83,7 +86,7 @@ export default {
       return this.currentOptionsValue ? this.options.find(item => item.value === this.currentOptionsValue) : null;
     },
     hasIcon() {
-      return !!this.options.find(item => item.icon);
+      return this.options.some(item => item.icon);
     },
   },
 

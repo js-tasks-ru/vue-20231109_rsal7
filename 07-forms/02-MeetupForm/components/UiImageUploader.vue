@@ -36,14 +36,13 @@ export default {
   inheritAttrs: false,
   emits: ['select', 'upload', 'remove', 'error'],
   data() {
-    const _vm = this;
     return {
       states: {
         'empty': {
           name: 'empty',
           message: 'Загрузить изображение',
           eventName: 'change',
-          eventMethod: _vm.emptyHandler,
+          eventMethod: this.emptyHandler,
           emitName: 'select',
           imgClass: '',
         },
@@ -51,7 +50,7 @@ export default {
           name: 'loading',
           message: 'Загрузка...',
           eventName: 'click',
-          eventMethod: _vm.loadingHandler,
+          eventMethod: this.loadingHandler,
           emitName: 'upload',
           imgClass: 'image-uploader__preview-loading',
         },
@@ -59,7 +58,7 @@ export default {
           name: 'filled',
           message: 'Удалить изображение',
           eventName: 'click',
-          eventMethod: _vm.filledHandler,
+          eventMethod: this.filledHandler,
           emitName: 'remove',
           imgClass: '',
         },
