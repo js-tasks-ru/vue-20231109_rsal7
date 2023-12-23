@@ -1,5 +1,9 @@
 <template>
-  <div :class='["dropdown", isOpen ? "dropdown_opened": ""]' @click='isOpen = !isOpen'>
+  <div
+    class='dropdown'
+    :class='{ dropdown_opened: isOpen}'
+    @click='isOpen = !isOpen'
+  >
     <button
       type='button'
       :class='{
@@ -11,21 +15,21 @@
       <span>{{ optionsTitle }}</span>
     </button>
 
-    <div class='dropdown__menu' role='listbox'  v-show='isOpen'>
-<!--      <template v-if='isOpen'>-->
-        <button
-          v-for='item in options'
-          class='dropdown__item'
-          :class='{dropdown__item_icon: hasIcon}'
-          role='option'
-          type='button'
-          :value='item.value'
-          @click='currentOptionsValue = item.value'
-        >
-          <UiIcon v-if='item.icon' :icon='item.icon' class='dropdown__icon' />
-          {{ item.text }}
-        </button>
-<!--      </template>-->
+    <div class='dropdown__menu' role='listbox' v-show='isOpen'>
+      <!--      <template v-if='isOpen'>-->
+      <button
+        v-for='item in options'
+        class='dropdown__item'
+        :class='{dropdown__item_icon: hasIcon}'
+        role='option'
+        type='button'
+        :value='item.value'
+        @click='currentOptionsValue = item.value'
+      >
+        <UiIcon v-if='item.icon' :icon='item.icon' class='dropdown__icon' />
+        {{ item.text }}
+      </button>
+      <!--      </template>-->
     </div>
   </div>
   <select v-model='currentOptionsValue' style='display: none'>

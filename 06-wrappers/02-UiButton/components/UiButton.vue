@@ -1,8 +1,10 @@
 <template>
   <component
     :is='tag'
-    v-bind="addAttrs"
-    :class="['button', `button_${variant}`, {'button_block': block}]"
+    class='button'
+    :class="[`button_${variant}`, {button_block: block}]"
+    v-bind='localAttributes'
+
   >
     <slot/>
   </component>
@@ -23,18 +25,21 @@ export default {
     block: {
       type: Boolean,
       default: false
+    },
+    btnType: {
+      type: String,
+      default: 'button'
     }
   },
-  inheritAttrs: false,
   computed: {
-    addAttrs(){
+    localAttributes(){
       const attributes = {...this.$attrs};
       if(this.tag === 'button'){
-        attributes.type = this.$attrs.type || 'button'
+        attributes.type = this.btnType;
       }
       return attributes;
     }
-  },
+  }
 };
 </script>
 

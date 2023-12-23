@@ -44,8 +44,8 @@ export default {
   data() {
     return {
       toastClassName: toastTypes[this.toast.toastType].className,
-      toastIcon: toastTypes[this.toast.toastType].icon
-    }
+      toastIcon: toastTypes[this.toast.toastType].icon,
+    };
   },
   components: { UiIcon },
   methods: {

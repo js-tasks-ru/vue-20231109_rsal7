@@ -1,6 +1,6 @@
 <template>
-  <component :is='tag' class="link">
-    <slot/>
+  <component :is='tag' class='link'>
+    <slot />
   </component>
 </template>
 
@@ -10,9 +10,9 @@ export default {
   props: {
     tag: {
       type: [String, Object, Function],
-      default: 'RouterLink'
-    }
-  }
+      default: 'RouterLink',
+    },
+  },
 };
 </script>
 

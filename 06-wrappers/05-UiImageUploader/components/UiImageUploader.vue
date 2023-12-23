@@ -114,9 +114,9 @@ export default {
     emitState(data = null) {
       this.$emit(this.currentState.emitName, data);
     },
-    emitError(e){
+    emitError(e) {
       this.$emit('error', e);
-    }
+    },
   },
   beforeMount() {
     this.currentState = this.preview ? this.states.filled : this.states.empty;

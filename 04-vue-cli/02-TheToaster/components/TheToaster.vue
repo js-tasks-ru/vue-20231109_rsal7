@@ -17,7 +17,6 @@ import UiToast from './UiToast';
 import UiToastList from './UiToastList';
 
 
-
 export default {
   name: 'TheToaster',
   data() {
@@ -44,7 +43,7 @@ export default {
       });
     },
     destroyToast(toastId) {
-      this.toasts.delete(toastId)
+      this.toasts.delete(toastId);
     },
   },
 };
@@ -73,7 +72,6 @@ export default {
 .toast + .toast {
   margin-top: 20px;
 }
-
 
 
 </style>

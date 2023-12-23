@@ -1,13 +1,12 @@
 <template>
   <UiInput
-    v-bind='$attrs'
     :type='type'
     v-model='localModelValue'
     :step='step'
     ref='igor'
   >
     <template v-if='$slots["left-icon"]' #left-icon>
-      <slot name="left-icon" />
+      <slot name='left-icon' />
     </template>
   </UiInput>
 </template>
@@ -21,8 +20,8 @@ const addZero = function(number) {
 const getStringTimeFromInt = function(number, step = 60) {
   const date = new Date(number);
   let dateString = `${addZero(date.getUTCHours())}:${addZero(date.getUTCMinutes())}`;
-  if (step % 60 !== 0){
-    dateString = dateString + `:${addZero(date.getSeconds())}`
+  if (step % 60 !== 0) {
+    dateString = dateString + `:${addZero(date.getSeconds())}`;
   }
   return dateString;
 };
@@ -56,7 +55,7 @@ export default {
   computed: {
     localModelValue: {
       get() {
-        if(this.modelValue){
+        if (this.modelValue) {
           if (this.type === 'time')
             return getStringTimeFromInt(this.modelValue, this.step);
           else if (this.type === 'date')
