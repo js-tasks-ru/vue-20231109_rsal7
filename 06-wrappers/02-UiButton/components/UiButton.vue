@@ -1,10 +1,45 @@
 <template>
-  <button class="button button_secondary button_block">BUTTON</button>
+  <component
+    :is='tag'
+    class='button'
+    :class="[`button_${variant}`, {button_block: block}]"
+    v-bind='localAttributes'
+
+  >
+    <slot/>
+  </component>
 </template>
 
 <script>
 export default {
   name: 'UiButton',
+  props: {
+    tag: {
+      type: [String, Object],
+      default: 'button'
+    },
+    variant: {
+      type: String,
+      default: 'secondary'
+    },
+    block: {
+      type: Boolean,
+      default: false
+    },
+    btnType: {
+      type: String,
+      default: 'button'
+    }
+  },
+  computed: {
+    localAttributes(){
+      const attributes = {...this.$attrs};
+      if(this.tag === 'button'){
+        attributes.type = this.btnType;
+      }
+      return attributes;
+    }
+  }
 };
 </script>
 

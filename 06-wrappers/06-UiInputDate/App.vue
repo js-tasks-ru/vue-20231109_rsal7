@@ -50,6 +50,7 @@ export default {
       showIcons: true,
     };
   },
+
 };
 </script>
 

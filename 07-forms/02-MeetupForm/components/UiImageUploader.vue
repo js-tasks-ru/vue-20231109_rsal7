@@ -1,67 +1,124 @@
-<!-- STUB: ЭТО ЗАГЛУШКА ДЛЯ РУЧНОГО ТЕСТИРОВАНИЯ -->
-<!-- ВЫ МОЖЕТЕ ИСПОЛЬЗОВАТЬ ПОЛНУЮ ВЕРСИЮ КОМПОНЕНТА, ЕСЛИ УЖЕ РЕАЛИЗОВАЛИ ЕГО -->
-
 <template>
-  <div class="image-uploader">
-    <label class="image-uploader__preview" :style="src && `--bg-url: url('${src}')`" @click.stop.prevent="handleClick">
-      <span class="image-uploader__text">{{ src ? 'Удалить' : 'Загрузить изображение' }}</span>
+  <div class='image-uploader'>
+    <label
+      class='image-uploader__preview'
+      :class='{"image-uploader__preview-loading": currentState.imgClass}'
+
+      :style="filePreview && { '--bg-url': `url(${filePreview})` }"
+    >
+      <span class='image-uploader__text'>{{ currentState.message }}</span>
       <input
-        ref="input"
-        type="file"
-        accept="image/*"
-        class="image-uploader__input"
-        v-bind="$attrs"
-        @change="mockFileSelect"
+        ref='input'
+        type='file'
+        accept='image/*'
+        class='image-uploader__input'
+        v-bind='$attrs'
+        @[currentState.eventName].prevent='currentState.eventMethod'
       />
     </label>
   </div>
 </template>
 
 <script>
+import * as vm from 'vm';
+
 export default {
   name: 'UiImageUploader',
-  inheritAttrs: false,
-
   props: {
+    preview: {
+      type: String,
+      required: false,
+    },
     uploader: {
       type: Function,
     },
-
-    preview: {
-      type: String,
-    },
   },
-
-  emits: ['upload', 'select', 'error', 'remove'],
-
+  inheritAttrs: false,
+  emits: ['select', 'upload', 'remove', 'error'],
   data() {
     return {
-      src: this.preview,
+      states: {
+        'empty': {
+          name: 'empty',
+          message: 'Загрузить изображение',
+          eventName: 'change',
+          eventMethod: this.emptyHandler,
+          emitName: 'select',
+          imgClass: '',
+        },
+        'loading': {
+          name: 'loading',
+          message: 'Загрузка...',
+          eventName: 'click',
+          eventMethod: this.loadingHandler,
+          emitName: 'upload',
+          imgClass: 'image-uploader__preview-loading',
+        },
+        'filled': {
+          name: 'filled',
+          message: 'Удалить изображение',
+          eventName: 'click',
+          eventMethod: this.filledHandler,
+          emitName: 'remove',
+          imgClass: '',
+        },
+      },
+
+      filePreview: this.preview,
+      currentState: null,
     };
   },
-
   methods: {
-    mockFileSelect() {
-      this.src = 'https://course-vue.javascript.ru/api/images/1';
-      const file = new File(['abc'], 'abc.jpeg', {
-        type: 'image/jpeg',
-      });
-      this.$emit('select', this.$refs.input.files[0] || file);
-    },
-
-    mockRemoveFile() {
-      this.src = null;
-      this.$refs.input.value = '';
-      this.$emit('remove');
-    },
-
-    handleClick() {
-      if (this.src && this.src !== this.preview) {
-        this.mockRemoveFile();
+    emptyHandler(event) {
+      const file = event.target.files[0];
+      // this.emitState(file);
+      this.filePreview = URL.createObjectURL(file);
+      if (this.uploader) {
+        this.setState('loading');
+        this.uploadFile(file);
       } else {
-        this.mockFileSelect();
+        this.emitState(file);
+        this.setState('filled');
       }
     },
+    loadingHandler(event) {
+      return false;
+    },
+    filledHandler(event) {
+      this.clearInput();
+      this.emitState();
+      this.setState('empty');
+    },
+    uploadFile(file) {
+      this.uploader(file)
+        .then(data => {
+          this.filePreview = data.image;
+          this.emitState(data);
+          this.setState('filled');
+        })
+        .catch(e => {
+          console.warn(e);
+          this.emitError(e);
+          this.setState('empty');
+          this.clearInput();
+        });
+    },
+    clearInput() {
+      this.$refs.input.value = '';
+      this.filePreview = null;
+    },
+    setState(state) {
+      this.currentState = this.states[state];
+    },
+    emitState(data = null) {
+      this.$emit(this.currentState.emitName, data);
+    },
+    emitError(e){
+      this.$emit('error', e);
+    }
+  },
+  beforeMount() {
+    this.currentState = this.preview ? this.states.filled : this.states.empty;
   },
 };
 </script>

@@ -1,21 +1,45 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <UiIcon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div
+    class='dropdown'
+    :class='{ dropdown_opened: isOpen}'
+    @click='isOpen = !isOpen'
+  >
+    <button
+      type='button'
+      :class='{
+      dropdown__toggle_icon: hasIcon
+    }'
+      class='dropdown__toggle'
+    >
+      <UiIcon v-if='!!optionsIcon' :icon='optionsIcon' class='dropdown__icon' />
+      <span>{{ optionsTitle }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 1
+    <div class='dropdown__menu' role='listbox' v-show='isOpen'>
+      <!--      <template v-if='isOpen'>-->
+      <button
+        v-for='item in options'
+        class='dropdown__item'
+        :class='{dropdown__item_icon: hasIcon}'
+        role='option'
+        type='button'
+        :value='item.value'
+        @click='currentOptionsValue = item.value'
+      >
+        <UiIcon v-if='item.icon' :icon='item.icon' class='dropdown__icon' />
+        {{ item.text }}
       </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <UiIcon icon="tv" class="dropdown__icon" />
-        Option 2
-      </button>
+      <!--      </template>-->
     </div>
   </div>
+  <select v-model='currentOptionsValue' style='display: none'>
+    <option
+      v-for='item in options'
+      :value='item.value'
+    >
+      {{ item.text }}
+    </option>
+  </select>
 </template>
 
 <script>
@@ -23,6 +47,52 @@ import UiIcon from './UiIcon.vue';
 
 export default {
   name: 'UiDropdown',
+
+  props: {
+    options: {
+      type: Array,
+      required: true,
+    },
+    modelValue: {
+      type: String,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      isOpen: false,
+    };
+  },
+
+  emits: [
+    'update:modelValue',
+  ],
+  methods: {},
+  computed: {
+    optionsTitle() {
+      return this.selectedOption ? this.selectedOption.text : this.title;
+    },
+    optionsIcon() {
+      return this.selectedOption ? this.selectedOption.icon : null;
+    },
+    currentOptionsValue: {
+      get() {
+        return this.modelValue;
+      },
+      set(value) {
+        this.$emit('update:modelValue', value);
+      },
+    },
+    selectedOption() {
+      return this.currentOptionsValue ? this.options.find(item => item.value === this.currentOptionsValue) : null;
+    },
+    hasIcon() {
+      return this.options.some(item => item.icon);
+    },
+  },
 
   components: { UiIcon },
 };

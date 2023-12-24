@@ -13,6 +13,8 @@ export default {
   name: 'App',
 
   components: { TheToaster },
+  mounted() {
+  },
 
   methods: {
     handleSuccessClick() {
