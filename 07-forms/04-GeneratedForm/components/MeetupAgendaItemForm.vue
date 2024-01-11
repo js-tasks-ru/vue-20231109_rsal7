@@ -72,7 +72,7 @@ const agendaItemTypeOptions = Object.entries(agendaItemDefaultTitles).map(([type
 }));
 
 const talkLanguageOptions = [
-  { value: null, text: 'Не указано' },
+  { value: null, text: 'Не указано!' },
   { value: 'RU', text: 'RU' },
   { value: 'EN', text: 'EN' },
 ];
