@@ -59,7 +59,7 @@ const agendaItemDefaultTitles = {
   opening: 'Открытие',
   break: 'Перерыв',
   coffee: 'Coffee Break',
-  closing: 'Закрытие',
+  closing: 'Закрытие!!!',
   afterparty: 'Afterparty',
   talk: 'Доклад',
   other: 'Другое',
@@ -72,7 +72,7 @@ const agendaItemTypeOptions = Object.entries(agendaItemDefaultTitles).map(([type
 }));
 
 const talkLanguageOptions = [
-  { value: null, text: 'Не указано' },
+  { value: null, text: 'Не указано!' },
   { value: 'RU', text: 'RU' },
   { value: 'EN', text: 'EN' },
 ];
