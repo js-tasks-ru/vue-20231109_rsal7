@@ -59,7 +59,7 @@ const agendaItemDefaultTitles = {
   opening: 'Открытие',
   break: 'Перерыв',
   coffee: 'Coffee Break',
-  closing: 'Закрытие',
+  closing: 'Закрытие!!!',
   afterparty: 'Afterparty',
   talk: 'Доклад',
   other: 'Другое',
