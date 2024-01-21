@@ -1,13 +1,7 @@
 <template>
-  <div v-if='currentState==="loading"'>
-    <slot name='pending' />
-  </div>
-  <div v-else-if='currentState==="rejected"'>
-    <slot :error='error' name='rejected' />
-  </div>
-  <div v-else-if='currentState==="fullFilled"'>
-    <slot :result='result' name='fulfilled' />
-  </div>
+    <slot name='pending' v-if='currentState==="loading"'/>
+    <slot :error='error' name='rejected' v-else-if='currentState==="rejected"'/>
+    <slot :result='result' name='fulfilled' v-else-if='currentState==="fullFilled"'/>
 </template>
 
 <script>
