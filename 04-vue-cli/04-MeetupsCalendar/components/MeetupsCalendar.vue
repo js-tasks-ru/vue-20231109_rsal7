@@ -39,10 +39,10 @@ import { useFilterCells } from '../composable/useFilterCells';
 import MeetupsCalendarItem from './MeetupsCalendarItem.vue';
 
 const props = defineProps({
-    meetups: {
-      type: Array,
-      required: true,
-    },
+  meetups: {
+    type: Array,
+    required: true,
+  },
 });
 
 const currentDate = ref(new Date());
@@ -65,7 +65,7 @@ const currentMonthToString = computed(() => {
 
 const { filterMeetups } = useMeetupsByDate(props.meetups);
 
-const { filterCells } = useFilterCells(currentDate, filterMeetups)
+const { filterCells } = useFilterCells(currentDate, filterMeetups);
 
 </script>
 

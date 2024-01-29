@@ -16,12 +16,12 @@
 </template>
 
 <script setup>
-  const props = defineProps({
-    cell: {
-      type: Object,
-      required: true
-    },
-  })
+const props = defineProps({
+  cell: {
+    type: Object,
+    required: true,
+  },
+});
 </script>
 
 <style scoped>
