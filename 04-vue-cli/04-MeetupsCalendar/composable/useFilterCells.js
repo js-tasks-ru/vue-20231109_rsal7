@@ -45,8 +45,5 @@ export function useFilterCells(currentDate, filterMeetups) {
 
   return {
     filterCells,
-    getIndex,
-    getDaysInMonth,
-    convertDateToUTC,
   };
 }

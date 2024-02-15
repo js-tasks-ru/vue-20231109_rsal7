@@ -62,8 +62,15 @@ const currentMonthToString = computed(() => {
     year: 'numeric',
   });
 });
+const filterMeetups = computed(() => {
+  const obj = {};
+  props.meetups.forEach(item => {
+    obj[item.date] ? obj[item.date].push(item) : obj[item.date] = [item];
+  });
+  return obj;
+});
 
-const { filterMeetups } = useMeetupsByDate(props.meetups);
+// const { filterMeetups } = useMeetupsByDate(props.meetups);
 
 const { filterCells } = useFilterCells(currentDate, filterMeetups);
 
